@@ -1,7 +1,7 @@
 openapi: 3.0.1
 info:
   title: Hathora Cloud API
-  version: 0.0.5
+  version: 0.0.7
 paths:
   /app/{appName}/:
     get:
@@ -295,4 +295,6 @@ components:
     BearerAuth:
       type: http
       scheme: bearer
-servers: []
+servers:
+  - url: https://cloud.hathora.dev/v1/
+    description: Production
