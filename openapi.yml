@@ -1,0 +1,298 @@
+openapi: 3.0.1
+info:
+  title: api
+  version: 0.0.1
+paths:
+  /app/{appName}/:
+    get:
+      operationId: AppsService.get
+      tags:
+        - App
+      parameters:
+        - name: appName
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/AppName'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetAppResponse'
+      summary: get
+      security: &ref_0
+        - BearerAuth: []
+  /app/{appName}/logs:
+    get:
+      operationId: AppsService.logs
+      tags:
+        - App
+      parameters:
+        - name: appName
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/AppName'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: string
+      summary: logs
+      security: *ref_0
+  /app/{appName}/delete:
+    delete:
+      operationId: AppsService.delete
+      tags:
+        - App
+      parameters:
+        - name: appName
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/AppName'
+        - name: forceDestroy
+          in: query
+          required: false
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: string
+      summary: delete
+      security: *ref_0
+  /rooms/create/{appId}:
+    post:
+      operationId: RoomsService.create
+      tags:
+        - Room
+      parameters:
+        - name: appId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/AppId'
+        - name: region
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/Region'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateRoomResponse'
+      summary: create
+      security: *ref_0
+  /rooms/connect/{appId}/{roomId}:
+    post:
+      operationId: RoomsService.connect
+      tags:
+        - Room
+      parameters:
+        - name: appId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/AppId'
+        - name: roomId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/RoomId'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConnectToRoomResponse'
+      summary: connect
+      security: *ref_0
+  /rooms/suspense/{appId}/{roomId}:
+    delete:
+      operationId: RoomsService.suspend
+      tags:
+        - Room
+      parameters:
+        - name: appId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/AppId'
+        - name: roomId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/RoomId'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuspendRoomResponse'
+      summary: suspend
+      security: *ref_0
+  /rooms/destory/{appId}/{roomId}:
+    delete:
+      operationId: RoomsService.destroy
+      tags:
+        - Room
+      parameters:
+        - name: appId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/AppId'
+        - name: roomId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/RoomId'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DestroyRoomResponse'
+      summary: destroy
+      security: *ref_0
+components:
+  schemas:
+    GetAppResponse:
+      type: object
+      properties:
+        secret:
+          type: string
+      required:
+        - secret
+      allOf:
+        - $ref: '#/components/schemas/Deployment'
+    AppId:
+      type: string
+    AppName:
+      type: string
+    RoomId:
+      type: string
+    Region:
+      type: string
+    DeploymentId:
+      type: string
+    Deployment:
+      type: object
+      properties:
+        appId:
+          $ref: '#/components/schemas/AppId'
+        deploymentId:
+          $ref: '#/components/schemas/DeploymentId'
+        regionalContainerTags:
+          type: array
+          items:
+            $ref: '#/components/schemas/RegionalContainerTags'
+        containerPort:
+          type: integer
+        transportType:
+          $ref: '#/components/schemas/TransportType'
+        roomsPerProcess:
+          type: integer
+        requestedCPU:
+          type: integer
+        requestedMemoryMB:
+          type: integer
+        deployedBy:
+          type: string
+        deployStartedAt:
+          type: string
+          format: date-time
+        deployFinishedAt:
+          type: string
+          format: date-time
+        status:
+          $ref: '#/components/schemas/DeploymentStatus'
+      required:
+        - appId
+        - deploymentId
+        - regionalContainerTags
+        - containerPort
+        - transportType
+        - roomsPerProcess
+        - requestedCPU
+        - requestedMemoryMB
+        - deployedBy
+        - deployStartedAt
+        - status
+    RegionalContainerTags:
+      type: object
+      properties:
+        region:
+          $ref: '#/components/schemas/Region'
+        containerTag:
+          type: string
+      required:
+        - region
+        - containerTag
+    TransportType:
+      type: string
+      enum:
+        - tcp
+        - udp
+    DeploymentStatus:
+      type: string
+      enum:
+        - running
+        - completed
+        - failed
+    CreateRoomResponse:
+      type: object
+      properties:
+        roomId:
+          $ref: '#/components/schemas/RoomId'
+        host:
+          type: string
+        port:
+          type: integer
+      required:
+        - roomId
+        - host
+        - port
+    ConnectToRoomResponse:
+      type: object
+      properties:
+        host:
+          type: string
+        port:
+          type: integer
+      required:
+        - host
+        - port
+    SuspendRoomResponse:
+      type: object
+      properties:
+        suspended:
+          type: boolean
+      required:
+        - suspended
+    DestroyRoomResponse:
+      type: object
+      properties:
+        destroyed:
+          type: boolean
+      required:
+        - destroyed
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+servers: []
