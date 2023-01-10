@@ -1,7 +1,7 @@
 openapi: 3.0.1
 info:
-  title: api
-  version: 0.0.2
+  title: Hathora Cloud API
+  version: 0.0.3
 paths:
   /app/{appName}/:
     get:
