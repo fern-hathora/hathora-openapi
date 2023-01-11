@@ -1,7 +1,7 @@
 openapi: 3.0.1
 info:
   title: Hathora Cloud API
-  version: 0.0.9
+  version: 0.0.11
 paths:
   /app/{appName}/:
     get:
@@ -21,7 +21,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GetAppResponse'
-      summary: get
+      summary: Get app response
       security: &ref_0
         - BearerAuth: []
   /app/{appName}/logs:
@@ -42,7 +42,7 @@ paths:
             application/json:
               schema:
                 type: string
-      summary: logs
+      summary: Get app logs
       security: *ref_0
   /app/{appName}/delete:
     delete:
@@ -67,7 +67,7 @@ paths:
             application/json:
               schema:
                 type: string
-      summary: delete
+      summary: Delete app
       security: *ref_0
   /rooms/create/{appId}:
     post:
@@ -92,7 +92,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CreateRoomResponse'
-      summary: create
+      summary: Create room
       security: *ref_0
   /rooms/connect/{appId}/{roomId}:
     post:
@@ -117,7 +117,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ConnectToRoomResponse'
-      summary: connect
+      summary: Connect room
       security: *ref_0
   /rooms/suspense/{appId}/{roomId}:
     delete:
@@ -142,7 +142,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SuspendRoomResponse'
-      summary: suspend
+      summary: Suspend room
       security: *ref_0
   /rooms/destory/{appId}/{roomId}:
     delete:
@@ -167,7 +167,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/DestroyRoomResponse'
-      summary: destroy
+      summary: Delete room
       security: *ref_0
 components:
   schemas:
