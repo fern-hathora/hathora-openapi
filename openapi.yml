@@ -1,7 +1,7 @@
 openapi: 3.0.1
 info:
   title: Hathora Cloud API
-  version: 0.0.12
+  version: 0.0.14
 paths:
   /app/{appName}/:
     get:
@@ -14,6 +14,9 @@ paths:
           required: true
           schema:
             $ref: '#/components/schemas/AppName'
+          examples:
+            Example1:
+              value: your-app-name
       responses:
         '200':
           description: ''
@@ -21,7 +24,23 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GetAppResponse'
-      summary: Get app response
+              examples:
+                Example1:
+                  value:
+                    appId: your-app-id
+                    deploymentId: your-deployment-id
+                    regionalContainerTags: []
+                    containerPort: 100
+                    transportType: tcp
+                    roomsPerProcess: 10
+                    requestedCPU: 32
+                    requestedMemoryMB: 4096
+                    deployedBy: username
+                    deployStartedAt: '2023-01-11T23:14:02+00:00'
+                    deployFinishedAt: '2023-01-11T23:14:42+00:00'
+                    status: completed
+                    secret: app-secret
+      summary: Get App
       security: &ref_0
         - BearerAuth: []
   /app/{appName}/logs:
@@ -35,6 +54,9 @@ paths:
           required: true
           schema:
             $ref: '#/components/schemas/AppName'
+          examples:
+            Example1:
+              value: your-app-name
       responses:
         '200':
           description: ''
@@ -42,7 +64,13 @@ paths:
             application/json:
               schema:
                 type: string
-      summary: Get app logs
+              examples:
+                Example1:
+                  value: |
+                    log line 1
+                    log line 2
+                    log line 3
+      summary: Get App logs
       security: *ref_0
   /app/{appName}/delete:
     delete:
@@ -55,6 +83,9 @@ paths:
           required: true
           schema:
             $ref: '#/components/schemas/AppName'
+          examples:
+            Example1:
+              value: your-app-name
         - name: forceDestroy
           in: query
           required: false
@@ -67,7 +98,10 @@ paths:
             application/json:
               schema:
                 type: string
-      summary: Delete app
+              examples:
+                Example1:
+                  value: Deleted app
+      summary: Delete App
       security: *ref_0
   /rooms/create/{appId}:
     post:
@@ -80,11 +114,17 @@ paths:
           required: true
           schema:
             $ref: '#/components/schemas/AppId'
+          examples:
+            Example1:
+              value: your-app-id
         - name: region
           in: query
           required: true
           schema:
             $ref: '#/components/schemas/Region'
+          examples:
+            Example1:
+              value: us-east-1
       responses:
         '200':
           description: ''
@@ -92,7 +132,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CreateRoomResponse'
-      summary: Create room
+              examples:
+                Example1:
+                  value:
+                    roomId: your-room-id
+                    host: https://www.your-host.com
+                    port: 435
+      summary: Create Room
       security: *ref_0
   /rooms/connect/{appId}/{roomId}:
     post:
@@ -105,11 +151,17 @@ paths:
           required: true
           schema:
             $ref: '#/components/schemas/AppId'
+          examples:
+            Example1:
+              value: your-app-id
         - name: roomId
           in: path
           required: true
           schema:
             $ref: '#/components/schemas/RoomId'
+          examples:
+            Example1:
+              value: your-room-id
       responses:
         '200':
           description: ''
@@ -117,7 +169,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ConnectToRoomResponse'
-      summary: Connect room
+              examples:
+                Example1:
+                  value:
+                    host: https://www.your-host.com
+                    port: 435
+      summary: Connect Room
       security: *ref_0
   /rooms/suspense/{appId}/{roomId}:
     delete:
@@ -130,11 +187,17 @@ paths:
           required: true
           schema:
             $ref: '#/components/schemas/AppId'
+          examples:
+            Example1:
+              value: your-app-id
         - name: roomId
           in: path
           required: true
           schema:
             $ref: '#/components/schemas/RoomId'
+          examples:
+            Example1:
+              value: your-room-id
       responses:
         '200':
           description: ''
@@ -142,7 +205,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SuspendRoomResponse'
-      summary: Suspend room
+              examples:
+                Example1:
+                  value:
+                    suspended: true
+      summary: Suspend Room
       security: *ref_0
   /rooms/destory/{appId}/{roomId}:
     delete:
@@ -155,11 +222,17 @@ paths:
           required: true
           schema:
             $ref: '#/components/schemas/AppId'
+          examples:
+            Example1:
+              value: your-app-id
         - name: roomId
           in: path
           required: true
           schema:
             $ref: '#/components/schemas/RoomId'
+          examples:
+            Example1:
+              value: your-room-id
       responses:
         '200':
           description: ''
@@ -167,7 +240,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/DestroyRoomResponse'
-      summary: Delete room
+              examples:
+                Example1:
+                  value:
+                    destroyed: true
+      summary: Destroy Room
       security: *ref_0
 components:
   schemas:
@@ -176,6 +253,7 @@ components:
       properties:
         secret:
           type: string
+          example: app-secret
       required:
         - secret
       allOf:
@@ -186,10 +264,37 @@ components:
       type: string
     RoomId:
       type: string
-    Region:
-      type: string
     DeploymentId:
       type: string
+    Region:
+      type: string
+      enum:
+        - ap-northeast-3
+        - af-south-1
+        - ap-east-1
+        - ap-northeast-1
+        - ap-northeast-2
+        - ap-south-1
+        - ap-south-2
+        - ap-southeast-1
+        - ap-southeast-2
+        - ap-southeast-3
+        - ca-central-1
+        - eu-central-1
+        - eu-central-2
+        - eu-north-1
+        - eu-south-1
+        - eu-south-2
+        - eu-west-1
+        - eu-west-2
+        - eu-west-3
+        - me-central-1
+        - me-south-1
+        - sa-east-1
+        - us-east-1
+        - us-east-2
+        - us-west-1
+        - us-west-2
     Deployment:
       type: object
       properties:
@@ -261,8 +366,10 @@ components:
           $ref: '#/components/schemas/RoomId'
         host:
           type: string
+          example: https://www.your-host.com
         port:
           type: integer
+          example: 435
       required:
         - roomId
         - host
@@ -272,8 +379,10 @@ components:
       properties:
         host:
           type: string
+          example: https://www.your-host.com
         port:
           type: integer
+          example: 435
       required:
         - host
         - port
@@ -282,6 +391,7 @@ components:
       properties:
         suspended:
           type: boolean
+          example: true
       required:
         - suspended
     DestroyRoomResponse:
@@ -289,6 +399,7 @@ components:
       properties:
         destroyed:
           type: boolean
+          example: true
       required:
         - destroyed
   securitySchemes:
